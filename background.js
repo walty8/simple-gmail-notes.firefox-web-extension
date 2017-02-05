@@ -17,7 +17,7 @@ isDebug = function(callback){
 
 var extensionID = browser.runtime.id;
 openTab = function(page){
-  browser.tabs.create({"url": "chrome-extension://" + extensionID + "/" + page});
+  browser.tabs.create({"url" : browser.extension.getURL(page)});
 }
 
 getRawStorageObject = function(){

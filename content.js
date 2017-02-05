@@ -29,7 +29,7 @@ isDebug = function(callback){
 
 var extensionID = browser.runtime.id;
 getIconBaseUrl = function(){
-  return "chrome-extension://" + extensionID + "/image";
+  return browser.extension.getURL("image");
 }
 
 
