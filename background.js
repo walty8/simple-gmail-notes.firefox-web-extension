@@ -10,14 +10,14 @@
 var isDebugCache = null
 isDebug = function(callback){
   if(isDebugCache === null)
-    isDebugCache = chrome.runtime.getManifest().version == "0.0.1";
+    isDebugCache = browser.runtime.getManifest().version == "0.0.1";
 
   return isDebugCache;
 }
 
-var extensionID = chrome.runtime.id;
+var extensionID = browser.runtime.id;
 openTab = function(page){
-  chrome.tabs.create({"url": "chrome-extension://" + extensionID + "/" + page});
+  browser.tabs.create({"url": "chrome-extension://" + extensionID + "/" + page});
 }
 
 getRawStorageObject = function(){
@@ -30,7 +30,7 @@ getRawPreferences = function(){
 }
 
 sendContentMessage = function(sender, message) {
-  chrome.tabs.sendMessage(sender.worker.tab.id, message, function(response) {
+  browser.tabs.sendMessage(sender.worker.tab.id, message, function(response) {
     debugLog("Message response:", response);
   });
 }
@@ -49,7 +49,7 @@ getRedirectUri = function() {
 
 launchAuthorizer = function(sender, callback) {
   debugLog("Trying to login Google Drive.");
-  chrome.identity.launchWebAuthFlow(
+  browser.identity.launchWebAuthFlow(
     {"url": "https://accounts.google.com/o/oauth2/auth?" +
       $.param({"client_id": settings.CLIENT_ID,
           "scope": settings.SCOPE,
@@ -66,7 +66,7 @@ launchAuthorizer = function(sender, callback) {
 }
 
 removeCachedToken = function(tokenValue){
-  chrome.identity.removeCachedAuthToken({'token':tokenValue}, function(){});
+  browser.identity.removeCachedAuthToken({'token':tokenValue}, function(){});
 }
 
 checkLogger = function(sender){
@@ -74,14 +74,14 @@ checkLogger = function(sender){
 }
 
 getCurrentVersion = function(){
-    return chrome.runtime.getManifest().version;
+    return browser.runtime.getManifest().version;
 }
 
 /*** end of callback implementation ***/
 
 //For messaging between background and content script
 $(window).on('load', function(){
-  chrome.runtime.onMessage.addListener(
+  browser.runtime.onMessage.addListener(
     function(request, sender, sendResponse) {
       debugLog("Get message to background", request);
       sender = {worker: sender, email: request.email};
@@ -90,12 +90,12 @@ $(window).on('load', function(){
   });
 });
 
-chrome.runtime.onInstalled.addListener(function(details){
+browser.runtime.onInstalled.addListener(function(details){
     if(details.reason == "install"){
-      alert("Thanks for installing. Please reload the Gmail page (click address bar & press enter key) to start using the extension!");
+      console.log("Thanks for installing. Please reload the Gmail page (click address bar & press enter key) to start using the extension!");
     } 
     else{
-      chrome.tabs.query({}, function(tabs){
+      browser.tabs.query({}, function(tabs){
           for(var i=0; i<tabs.length; i++){
             var tab = tabs[i];
 

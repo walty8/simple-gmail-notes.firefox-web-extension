@@ -6,13 +6,13 @@
 
 /*** call back implementation for content-common.js ***/
 sendBackgroundMessage = function(message) {
-  chrome.runtime.sendMessage(message, function(response){
+  browser.runtime.sendMessage(message, function(response){
     debugLog("Message response", response);
   });
 }
 
 setupBackgroundEventsListener = function(callback) {
-  chrome.runtime.onMessage.addListener(
+  browser.runtime.onMessage.addListener(
       function(request, sender, sendResponse) {
         callback(request);
       }
@@ -22,12 +22,12 @@ setupBackgroundEventsListener = function(callback) {
 var isDebugCache = null
 isDebug = function(callback){
   if(isDebugCache === null)
-    isDebugCache = chrome.runtime.getManifest().version == "0.0.1";
+    isDebugCache = browser.runtime.getManifest().version == "0.0.1";
 
   return isDebugCache;
 }
 
-var extensionID = chrome.runtime.id;
+var extensionID = browser.runtime.id;
 getIconBaseUrl = function(){
   return "chrome-extension://" + extensionID + "/image";
 }
@@ -35,7 +35,7 @@ getIconBaseUrl = function(){
 
 function addScript(scriptPath){
     var j = document.createElement('script');
-    j.src = chrome.extension.getURL(scriptPath);
+    j.src = browser.extension.getURL(scriptPath);
     j.async = false;
     j.defer = false;
     (document.head || document.documentElement).appendChild(j);
