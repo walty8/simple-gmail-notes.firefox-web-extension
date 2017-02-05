@@ -5,12 +5,12 @@ var gPreferenceTypes = ["abstractStyle", "noteHeight", "fontColor",
                         "showAddCalendar", "showDelete",
                         "debugPageInfo", "debugContentInfo", "debugBackgroundInfo"];
 
-function isChrome(){
-   return /chrom(e|ium)/.test(navigator.userAgent.toLowerCase());
+function isWebExtension(){
+  return window.location.href.indexOf("extension://") > 0;
 }
 
 function pushPreferences(preferences){
-  if(isChrome()){
+  if(isWebExtension()){
     $.each(gPreferenceTypes, function(index, key){
         localStorage[key] = preferences[key];
     });
@@ -23,7 +23,7 @@ function pushPreferences(preferences){
 function pullPreferences(){
   var preferences = {};
 
-  if(isChrome()){
+  if(isWebExtension()){
     updateDefaultPreferences(localStorage);
     $.each(gPreferenceTypes, function(index, key){
       preferences[key] = localStorage[key];
@@ -39,7 +39,7 @@ function pullPreferences(){
 }
 
 //for firefox only
-if(!isChrome()){
+if(!isWebExtension()){
   self.port.on("SGN_options", function(request){
     switch(request.action){
       case "update_preferences":
